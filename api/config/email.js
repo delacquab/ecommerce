@@ -1,24 +1,24 @@
+// module.exports = {
+//   host: "smtp.gmail.com",
+//   port: 465,
+//   auth: {
+//     user: "user@gmail.com",
+//     pass: "*****"
+//   }
+// };
+
 module.exports = {
-  host: "smtp.gmail.com",
-  port: 465,
+  host: "smtp.mailtrap.io",
+  port: 2525,
+  secure: false,
   auth: {
-    user: "user@gmail.com",
-    pass: "*****"
+    user: "b63b8c4e44f70c",
+    pass: "1653492e205111"
+  },
+  default: {
+    from: "Equipe GoBarber <noreply@gobarber.com>"
   }
 };
-
-// export default {
-//     host: process.env.MAIL_HOST,
-//     port: process.env.MAIL_PORT,
-//     secure: false,
-//     auth: {
-//       user: process.env.MAIL_USER,
-//       pass: process.env.MAIL_PASS,
-//     },
-//     default: {
-//       from: "Equipe GoBarber <noreply@gobarber.com>",
-//     },
-//   };
 
 /**
  * Exemplos de email
