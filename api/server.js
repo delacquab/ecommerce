@@ -20,7 +20,7 @@ app.use("/public/images", express.static(__dirname + "public/images"));
 
 // setup mongodb
 const dbs = require("./config/database");
-const dbURI = isProduction ? dbs.dbProduction : dbTest;
+const dbURI = isProduction ? dbs.dbProduction : dbs.dbTest;
 mongoose.connect(dbURI, { useNewUrlParser: true });
 
 // setup ejs
@@ -56,7 +56,7 @@ app.use((err, req, res, next) => {
 });
 
 // escutar
-app.listen(PORT, (err) => {
+app.listen(PORT, err => {
   if (err) throw err;
   console.log(`Rodando na //localhost:${PORT}`);
 });
