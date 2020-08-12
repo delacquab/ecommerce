@@ -21,7 +21,7 @@ class UsuarioController {
   // GET /:id
   show(req, res, next) {
     Usuario.findById(req.params.id)
-      //.populate({ path: "loja" })
+      .populate({ path: "loja" })
       .then(usuario => {
         if (!usuario)
           return res.status(401).json({ errors: "Usuário não registrado" });
@@ -42,11 +42,6 @@ class UsuarioController {
   // POST /registrar
   store(req, res, next) {
     const { nome, email, password, loja } = req.body;
-
-    if (!nome || !email || !password || !loja)
-      return res
-        .status(422)
-        .json({ errors: "Preencha todos os campos de cadastro." });
 
     const usuario = new Usuario({ nome, email, loja });
     usuario.setSenha(password);
@@ -103,16 +98,6 @@ class UsuarioController {
   // POST /login
   login(req, res, next) {
     const { email, password } = req.body;
-
-    if (!email)
-      return res
-        .status(422)
-        .json({ errors: { email: "não pode ficar vazio" } });
-
-    if (!password)
-      return res
-        .status(422)
-        .json({ errors: { password: "não pode ficar vazio" } });
 
     Usuario.findOne({ email })
       .then(usuario => {
