@@ -20,7 +20,13 @@ router.get(
   Validation(ClienteValidation.index),
   clienteController.index
 );
-//router.get("/search/:search/pedidos", auth.required, LojaValidation.admin, Validation(ClienteValidation.searchPedidos), clienteController.searchPedidos);
+router.get(
+  "/search/:search/pedidos",
+  auth.required,
+  LojaValidation.admin,
+  Validation(ClienteValidation.searchPedidos),
+  clienteController.searchPedidos
+);
 router.get(
   "/search/:search",
   auth.required,
@@ -35,7 +41,13 @@ router.get(
   Validation(ClienteValidation.showAdmin),
   clienteController.showAdmin
 );
-//router.get("/admin/:id/pedidos", auth.required, LojaValidation.admin, Validation(ClienteValidation.showPedidosCliente), clienteController.showPedidosCliente);
+router.get(
+  "/admin/:id/pedidos",
+  auth.required,
+  LojaValidation.admin,
+  Validation(ClienteValidation.showPedidosCliente),
+  clienteController.showPedidosCliente
+);
 
 router.delete(
   "/admin/:id",
