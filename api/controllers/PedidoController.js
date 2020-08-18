@@ -7,7 +7,7 @@ const Variacao = mongoose.model("Variacao");
 const Pagamento = mongoose.model("Pagamento");
 const Entrega = mongoose.model("Entrega");
 const Cliente = mongoose.model("Cliente");
-//const RegistroPedido = mongoose.model("RegistroPedido");
+const RegistroPedido = mongoose.model("RegistroPedido");
 
 // const { calcularFrete } = require("./integracoes/correios");
 // const PagamentoValidation = require("./validacoes/pagamentoValidation");
@@ -53,20 +53,25 @@ class PedidoController {
   // get /admin/:id showAdmin
   async showAdmin(req, res, next) {
     try {
+      // const pedido = await Pedido.findOne({
+      //   loja: req.query.loja,
+      //   _id: req.params.id
+      // }).populate(["cliente", "pagamento", "entrega", "loja"]);
+      // pedido.carrinho = await Promise.all(
+      //   pedido.carrinho.map(async item => {
+      //     item.produto = await Produto.findById(item.produto);
+      //     item.variacao = await Variacao.findById(item.variacao);
+      //     return item;
+      //   })
+      // );
+
       const pedido = await Pedido.findOne({
         loja: req.query.loja,
         _id: req.params.id
       }).populate(["cliente", "pagamento", "entrega", "loja"]);
-      pedido.carrinho = await Promise.all(
-        pedido.carrinho.map(async item => {
-          item.produto = await Produto.findById(item.produto);
-          item.variacao = await Variacao.findById(item.variacao);
-          return item;
-        })
-      );
-      //const registros = await RegistroPedido.find({ pedido: pedido._id });
-      //return res.send({ pedido, registros });
-      return res.send(pedido);
+
+      const registros = await RegistroPedido.find({ pedido: pedido._id });
+      return res.send({ pedido, registros });
     } catch (e) {
       next(e);
     }
@@ -84,12 +89,12 @@ class PedidoController {
         return res.status(400).send({ error: "Pedido não encontrado" });
       pedido.cancelado = true;
 
-      // const registroPedido = new RegistroPedido({
-      //     pedido: pedido._id,
-      //     tipo: "pedido",
-      //     situacao: "pedido_cancelado"
-      // });
-      // await registroPedido.save();
+      const registroPedido = new RegistroPedido({
+        pedido: pedido._id,
+        tipo: "pedido",
+        situacao: "pedido_cancelado"
+      });
+      await registroPedido.save();
 
       //EmailController.cancelarPedido({ usuario: pedido.cliente.usuario, pedido });
 
@@ -173,9 +178,8 @@ class PedidoController {
           return item;
         })
       );
-      //const registros = await RegistroPedido.find({ pedido: pedido._id });
-      //return res.send({ pedido, registros });
-      return res.send({ pedido });
+      const registros = await RegistroPedido.find({ pedido: pedido._id });
+      return res.send({ pedido, registros });
     } catch (e) {
       next(e);
     }
@@ -242,12 +246,12 @@ class PedidoController {
 
       // await QuantidadeValidation.atualizarQuantidade("salvar_pedido", pedido);
 
-      // const registroPedido = new RegistroPedido({
-      //     pedido: pedido._id,
-      //     tipo: "pedido",
-      //     situacao: "pedido_criado"
-      // });
-      // await registroPedido.save();
+      const registroPedido = new RegistroPedido({
+        pedido: pedido._id,
+        tipo: "pedido",
+        situacao: "pedido_criado"
+      });
+      await registroPedido.save();
 
       //EmailController.enviarNovoPedido({ pedido, usuario: cliente.usuario });
       // const administradores = await Usuario.find({ permissao: "admin", loja });
@@ -281,12 +285,12 @@ class PedidoController {
         return res.status(400).send({ error: "Pedido não encontrado" });
       pedido.cancelado = true;
 
-      // const registroPedido = new RegistroPedido({
-      //     pedido: pedido._id,
-      //     tipo: "pedido",
-      //     situacao: "pedido_cancelado"
-      // });
-      // await registroPedido.save();
+      const registroPedido = new RegistroPedido({
+        pedido: pedido._id,
+        tipo: "pedido",
+        situacao: "pedido_cancelado"
+      });
+      await registroPedido.save();
 
       // const administradores = await Usuario.find({ permissao: "admin", loja: pedido.loja });
       // administradores.forEach((usuario) => {
