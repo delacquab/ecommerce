@@ -11,7 +11,7 @@ const RegistroPedido = mongoose.model("RegistroPedido");
 
 const { calcularFrete } = require("./integracoes/correios");
 // const PagamentoValidation = require("./validacoes/pagamentoValidation");
-// const EntregaValidation = require("./validacoes/entregaValidation");
+const EntregaValidation = require("./validacoes/entregaValidation");
 // const QuantidadeValidation = require("./validacoes/quantidadeValidation");
 
 //const EmailController = require("./EmailController");
@@ -210,7 +210,14 @@ class PedidoController {
       //if(!await QuantidadeValidation.validarQuantidadeDisponivel(carrinho)) return res.status(400).send({ error: "Produtos não tem quantidade disponivel" });
 
       // CHECAR DADOS DE ENTREGA
-      //if(!await EntregaValidation.checarValorPrazo(cliente.endereco.CEP, carrinho, entrega)) return res.status(422).send({ error: "Dados de Entrega Inválidos" });
+      if (
+        !(await EntregaValidation.checarValorPrazo(
+          cliente.endereco.CEP,
+          carrinho,
+          entrega
+        ))
+      )
+        return res.status(422).send({ error: "Dados de Entrega Inválidos" });
 
       // CHECAR DADOS DO PAGAMENTO
       //if(!await PagamentoValidation.checarValorTotal({carrinho, entrega, pagamento})) return res.status(422).send({ error: "Dados de Pagamento Inválidos" });
