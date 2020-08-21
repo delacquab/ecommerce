@@ -66,7 +66,8 @@ class VariacaoController {
       preco,
       promocao,
       entrega,
-      quantidade
+      quantidade,
+      quantidadeBloqueada
     } = req.body;
 
     const { loja, produto } = req.query;
@@ -82,6 +83,8 @@ class VariacaoController {
       if (promocao) variacao.promocao = promocao;
       if (entrega) variacao.entrega = entrega;
       if (quantidade) variacao.quantidade = quantidade;
+      if (quantidadeBloqueada)
+        variacao.quantidadeBloqueada = quantidadeBloqueada;
       if (fotos) variacao.fotos = fotos;
 
       await variacao.save();

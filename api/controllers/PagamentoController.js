@@ -12,9 +12,9 @@ const Pedido = mongoose.model("Pedido");
 const Produto = mongoose.model("Produto");
 const Variacao = mongoose.model("Variacao");
 const RegistroPedido = mongoose.model("RegistroPedido");
-//const QuantidadeValidation = require("./validacoes/quantidadeValidation");
+const QuantidadeValidation = require("./validacoes/quantidadeValidation");
 
-//const EmailController = require("./EmailController");
+const EmailController = require("./EmailController");
 
 class PagamentoController {
   // CLIENTES
@@ -116,19 +116,30 @@ class PagamentoController {
       });
       await registroPedido.save();
       // Enviar email de aviso para o cliente - aviso de atualizacao de pagamento
-      // const pedido = await Pedido.findById(pagamento.pedido).populate({ path:"cliente", populate: { path: "usuario" } });
-      // EmailController.atualizarPedido({
-      //     usuario: pedido.cliente.usuario,
-      //     pedido,
-      //     tipo: "pagamento",
-      //     status,
-      //     data: new Date()
-      // });
+      const pedido = await Pedido.findById(pagamento.pedido).populate({
+        path: "cliente",
+        populate: { path: "usuario" }
+      });
+      EmailController.atualizarPedido({
+        usuario: pedido.cliente.usuario,
+        pedido,
+        tipo: "pagamento",
+        status,
+        data: new Date()
+      });
 
       await pagamento.save();
 
-      //if( status.toLowerCase().includes("pago") ) await QuantidadeValidation.atualizarQuantidade("confirmar_pedido", pedido);
-      //else if( status.toLowerCase().includes("cancelado") ) await QuantidadeValidation.atualizarQuantidade("cancelar_pedido", pedido);
+      if (status.toLowerCase().includes("pago"))
+        await QuantidadeValidation.atualizarQuantidade(
+          "confirmar_pedido",
+          pedido
+        );
+      else if (status.toLowerCase().includes("cancelado"))
+        await QuantidadeValidation.atualizarQuantidade(
+          "cancelar_pedido",
+          pedido
+        );
 
       return res.send({ pagamento });
     } catch (e) {
@@ -184,17 +195,28 @@ class PagamentoController {
 
         await registroPedido.save();
         // Enviar email de aviso para o cliente - aviso de atualizacao de pagamento
-        // const pedido = await Pedido.findById(pagamento.pedido).populate({ path:"cliente", populate: { path: "usuario" } });
-        // EmailController.atualizarPedido({
-        //     usuario: pedido.cliente.usuario,
-        //     pedido,
-        //     tipo: "pagamento",
-        //     status: situacao.status,
-        //     data: new Date()
-        // });
+        const pedido = await Pedido.findById(pagamento.pedido).populate({
+          path: "cliente",
+          populate: { path: "usuario" }
+        });
+        EmailController.atualizarPedido({
+          usuario: pedido.cliente.usuario,
+          pedido,
+          tipo: "pagamento",
+          status: situacao.status,
+          data: new Date()
+        });
 
-        //if( situacao.status === "Paga" ) await QuantidadeValidation.atualizarQuantidade("confirmar_pedido", pedido);
-        //else if( situacao.status === "Cancelada" ) await QuantidadeValidation.atualizarQuantidade("cancelar_pedido", pedido);
+        if (situacao.status === "Paga")
+          await QuantidadeValidation.atualizarQuantidade(
+            "confirmar_pedido",
+            pedido
+          );
+        else if (situacao.status === "Cancelada")
+          await QuantidadeValidation.atualizarQuantidade(
+            "cancelar_pedido",
+            pedido
+          );
       }
       return res.send({ success: true });
     } catch (e) {

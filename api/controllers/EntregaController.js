@@ -7,7 +7,7 @@ const Produto = mongoose.model("Produto");
 const Variacao = mongoose.model("Variacao");
 const RegistroPedido = mongoose.model("RegistroPedido");
 
-//const EmailController = require("./EmailController");
+const EmailController = require("./EmailController");
 
 class EntregaController {
   // GET /:id show
@@ -44,15 +44,18 @@ class EntregaController {
         payload: req.body
       });
       await registroPedido.save();
-      // Enviar email de aviso para o cliente - aviso de atualizacao na entrega
-      // const pedido = await Pedido.findById(entrega.pedido).populate({ path:"cliente", populate: { path: "usuario" } });
-      // EmailController.atualizarPedido({
-      //     usuario: pedido.cliente.usuario,
-      //     pedido,
-      //     tipo: "entrega",
-      //     status: status,
-      //     data: new Date()
-      // });
+      //Enviar email de aviso para o cliente - aviso de atualizacao na entrega
+      const pedido = await Pedido.findById(entrega.pedido).populate({
+        path: "cliente",
+        populate: { path: "usuario" }
+      });
+      EmailController.atualizarPedido({
+        usuario: pedido.cliente.usuario,
+        pedido,
+        tipo: "entrega",
+        status: status,
+        data: new Date()
+      });
 
       await entrega.save();
       return res.send({ entrega });

@@ -12,9 +12,9 @@ const RegistroPedido = mongoose.model("RegistroPedido");
 const { calcularFrete } = require("./integracoes/correios");
 const PagamentoValidation = require("./validacoes/pagamentoValidation");
 const EntregaValidation = require("./validacoes/entregaValidation");
-// const QuantidadeValidation = require("./validacoes/quantidadeValidation");
+const QuantidadeValidation = require("./validacoes/quantidadeValidation");
 
-//const EmailController = require("./EmailController");
+const EmailController = require("./EmailController");
 
 const CarrinhoValidation = require("./validacoes/carrinhoValidation");
 
@@ -96,11 +96,14 @@ class PedidoController {
       });
       await registroPedido.save();
 
-      //EmailController.cancelarPedido({ usuario: pedido.cliente.usuario, pedido });
+      EmailController.cancelarPedido({
+        usuario: pedido.cliente.usuario,
+        pedido
+      });
 
       await pedido.save();
 
-      //await QuantidadeValidation.atualizarQuantidade("cancelar_pedido", pedido);
+      await QuantidadeValidation.atualizarQuantidade("cancelar_pedido", pedido);
 
       return res.send({ cancelado: true });
     } catch (e) {
@@ -207,7 +210,10 @@ class PedidoController {
         usuario: req.payload.id
       }).populate({ path: "usuario", select: "_id nome email" });
 
-      //if(!await QuantidadeValidation.validarQuantidadeDisponivel(carrinho)) return res.status(400).send({ error: "Produtos não tem quantidade disponivel" });
+      if (!(await QuantidadeValidation.validarQuantidadeDisponivel(carrinho)))
+        return res
+          .status(400)
+          .send({ error: "Produtos não tem quantidade disponível" });
 
       // CHECAR DADOS DE ENTREGA
       if (
@@ -269,7 +275,7 @@ class PedidoController {
       await novoPagamento.save();
       await novaEntrega.save();
 
-      // await QuantidadeValidation.atualizarQuantidade("salvar_pedido", pedido);
+      await QuantidadeValidation.atualizarQuantidade("salvar_pedido", pedido);
 
       const registroPedido = new RegistroPedido({
         pedido: pedido._id,
@@ -278,11 +284,11 @@ class PedidoController {
       });
       await registroPedido.save();
 
-      //EmailController.enviarNovoPedido({ pedido, usuario: cliente.usuario });
-      // const administradores = await Usuario.find({ permissao: "admin", loja });
-      // administradores.forEach((usuario) => {
-      //     EmailController.enviarNovoPedido({ pedido, usuario });
-      // });
+      EmailController.enviarNovoPedido({ pedido, usuario: cliente.usuario });
+      const administradores = await Usuario.find({ permissao: "admin", loja });
+      administradores.forEach(usuario => {
+        EmailController.enviarNovoPedido({ pedido, usuario });
+      });
 
       return res.send({
         pedido: Object.assign({}, pedido._doc, {
@@ -317,14 +323,17 @@ class PedidoController {
       });
       await registroPedido.save();
 
-      // const administradores = await Usuario.find({ permissao: "admin", loja: pedido.loja });
-      // administradores.forEach((usuario) => {
-      //     EmailController.cancelarPedido({ pedido, usuario });
-      // });
+      const administradores = await Usuario.find({
+        permissao: "admin",
+        loja: pedido.loja
+      });
+      administradores.forEach(usuario => {
+        EmailController.cancelarPedido({ pedido, usuario });
+      });
 
       await pedido.save();
 
-      //await QuantidadeValidation.atualizarQuantidade("cancelar_pedido", pedido);
+      await QuantidadeValidation.atualizarQuantidade("cancelar_pedido", pedido);
 
       return res.send({ cancelado: true });
     } catch (e) {
