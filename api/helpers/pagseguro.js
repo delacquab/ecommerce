@@ -227,7 +227,7 @@ pagseguro.prototype.transactionStatus = function(code, cb) {
             status = "Em Análise";
             break;
           case "3":
-            status = "Paga";
+            status = "Pago";
             break;
           case "4":
             status = "Disponível";

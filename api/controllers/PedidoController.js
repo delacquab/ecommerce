@@ -10,7 +10,7 @@ const Cliente = mongoose.model("Cliente");
 const RegistroPedido = mongoose.model("RegistroPedido");
 
 const { calcularFrete } = require("./integracoes/correios");
-// const PagamentoValidation = require("./validacoes/pagamentoValidation");
+const PagamentoValidation = require("./validacoes/pagamentoValidation");
 const EntregaValidation = require("./validacoes/entregaValidation");
 // const QuantidadeValidation = require("./validacoes/quantidadeValidation");
 
@@ -220,15 +220,25 @@ class PedidoController {
         return res.status(422).send({ error: "Dados de Entrega Inválidos" });
 
       // CHECAR DADOS DO PAGAMENTO
-      //if(!await PagamentoValidation.checarValorTotal({carrinho, entrega, pagamento})) return res.status(422).send({ error: "Dados de Pagamento Inválidos" });
-      //if(!PagamentoValidation.checarCartao(pagamento)) return res.status(422).send({ error: "Dados de Pagamento com Cartao Inválidos" });
+      if (
+        !(await PagamentoValidation.checarValorTotal({
+          carrinho,
+          entrega,
+          pagamento
+        }))
+      )
+        return res.status(422).send({ error: "Dados de Pagamento Inválidos" });
+      if (!PagamentoValidation.checarCartao(pagamento))
+        return res
+          .status(422)
+          .send({ error: "Dados de Pagamento com Cartao Inválidos" });
 
       const novoPagamento = new Pagamento({
         valor: pagamento.valor,
         parcelas: pagamento.parcelas || 1,
         forma: pagamento.forma,
         status: "iniciando",
-        payload: pagamento,
+        //payload: pagamento,
         endereco: pagamento.endereco,
         cartao: pagamento.cartao,
         enderecoEntregaIgualCobranca: pagamento.enderecoEntregaIgualCobranca,
@@ -239,7 +249,7 @@ class PedidoController {
         status: "nao_iniciado",
         custo: entrega.custo,
         prazo: entrega.prazo,
-        payload: pagamento,
+        //payload: pagamento,
         tipo: entrega.tipo,
         endereco: entrega.endereco,
         loja
