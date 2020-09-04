@@ -45,7 +45,7 @@ const ListItems = ({ open, history }) => {
               localAtual === item.rota ? "menu-item-active" : ""
             } flex horizontal`}
           >
-            <div className="flex=1 flex flex-center">{item.icone}</div>
+            <div className="flex-1 flex flex-center">{item.icone}</div>
             {open && (
               <div className="flex-2 flex flex-start">
                 <span>{item.titulo}</span>
