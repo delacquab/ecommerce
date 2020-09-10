@@ -10,6 +10,12 @@ import base from "./containers/HOC/Base";
 import Pedidos from "./containers/Pedidos";
 import Pedido from "./containers/Pedido";
 
+import Clientes from "./containers/Clientes";
+import Cliente from "./containers/Cliente";
+
+import Categorias from "./containers/Categorias";
+import Categoria from "./containers/Categoria";
+
 // CONTAINER SEM BASE
 import Login from "./containers/Login";
 import RecuperarSenha from "./containers/RecuperarSenha";
@@ -21,7 +27,13 @@ function App() {
       <Router>
         <div className="App">
           <Route path={"/"} exact component={base(Pedidos)} />
-          <Route path={"/pedido"} component={base(Pedido)} />
+          <Route path={"/pedido/:id"} component={base(Pedido)} />
+
+          <Route path={"/clientes"} component={base(Clientes)} />
+          <Route path={"/cliente/:email"} component={base(Cliente)} />
+
+          <Route path={"/categorias"} component={base(Categorias)} />
+          <Route path={"/categoria/:id"} component={base(Categoria)} />
 
           <Route path={"/login"} component={Login} />
           <Route path={"/recuperar-senha"} component={RecuperarSenha} />

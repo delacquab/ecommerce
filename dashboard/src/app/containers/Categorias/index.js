@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import moment from "moment";
 
 import Titulo from "../../components/Texto/Titulo";
 
@@ -7,7 +6,7 @@ import Pesquisa from "../../components/Inputs/Pesquisa";
 import Tabela from "../../components/Tabela/Simples";
 import Paginacao from "../../components/Paginacao/Simples";
 
-class Pedidos extends Component {
+class Categorias extends Component {
   state = {
     pesquisa: "",
     atual: 0
@@ -22,44 +21,45 @@ class Pedidos extends Component {
     //DADOS
     const dados = [
       {
-        Cliente: "Cliente 1",
-        "Valor Total": 89.9,
-        Data: moment().toISOString(),
-        Situação: "Aguardando Pagamento",
-        botaoDetalhes: "/pedido/d6s7dd8d6s7dsa768"
+        Categoria: "Acessórios",
+        "Qtd. de Produtos": 15,
+        botaoDetalhes: "/categoria/acessorios"
       },
       {
-        Cliente: "Cliente 2",
-        "Valor Total": 189.9,
-        Data: moment().toISOString(),
-        Situação: "Aguardando Concluído",
-        botaoDetalhes: "/pedido/d6s78drr6s7dsa768"
+        Categoria: "Computadores",
+        "Qtd. de Produtos": 5,
+        botaoDetalhes: "/categoria/computadores"
       },
       {
-        Cliente: "Cliente 3",
-        "Valor Total": 8,
-        Data: moment().toISOString(),
-        Situação: "Aguardando Pagamento",
-        botaoDetalhes: "/pedido/d6s78dyy6s7dsa768"
+        Categoria: "Fones de Ouvido",
+        "Qtd. de Produtos": 7,
+        botaoDetalhes: "/categoria/fones"
+      },
+      {
+        Categoria: "Gabinetes",
+        "Qtd. de Produtos": 3,
+        botaoDetalhes: "/categoria/gabinetes"
+      },
+      {
+        Categoria: "Processadores",
+        "Qtd. de Produtos": 8,
+        botaoDetalhes: "/categoria/processadores"
       }
     ];
 
     return (
-      <div className="Pedidos full-width">
+      <div className="Categorias full-width">
         <div className="Card">
-          <Titulo tipo="h1" titulo="Pedidos" />
+          <Titulo tipo="h1" titulo="Categorias" />
           <br />
           <Pesquisa
             valor={pesquisa}
-            placeholder={"Pesquisa aqui pelo nome do cliente..."}
+            placeholder={"Pesquise aqui pelo nome da categoria..."}
             onChange={ev => this.onChangePesquisa(ev)}
             onClick={() => alert("Pesquisar")}
           />
           <br />
-          <Tabela
-            cabecalho={["Cliente", "Valor Total", "Data", "Situação"]}
-            dados={dados}
-          />
+          <Tabela cabecalho={["Categoria", "Qtd. de Produtos"]} dados={dados} />
           {
             <Paginacao
               atual={this.state.atual}
@@ -74,4 +74,4 @@ class Pedidos extends Component {
   }
 }
 
-export default Pedidos;
+export default Categorias;
