@@ -3,6 +3,8 @@ import Titulo from "../../components/Texto/Titulo";
 import ButtonSimples from "../../components/Button/Simples";
 import { TextoDados } from "../../components/Texto/Dados";
 import InputValor from "../../components/Inputs/InputValor";
+import InputSelect from "../../components/Inputs/Select";
+import Voltar from "../../components/Links/Voltar";
 
 class DetalhesCategoria extends Component {
   state = {
@@ -64,15 +66,17 @@ class DetalhesCategoria extends Component {
         <TextoDados
           chave="Disponibilidade"
           valor={
-            <select
-              value={disponibilidade}
+            <InputSelect
+              name="disponibilidade"
               onChange={ev =>
                 this.setState({ disponibilidade: ev.target.value })
               }
-            >
-              <option value="disponivel">Disponível</option>
-              <option value="indisponivel">Indisponível</option>
-            </select>
+              value={disponibilidade}
+              opcoes={[
+                { label: "Disponível", value: "disponivel" },
+                { label: "Indisponível", value: "indisponivel" }
+              ]}
+            />
           }
         />
       </div>
@@ -82,6 +86,7 @@ class DetalhesCategoria extends Component {
   render() {
     return (
       <div className="Detalhes-Categoria">
+        <Voltar path="/categorias" />
         {this.renderCabecalho()}
         {this.renderDados()}
       </div>
