@@ -53,9 +53,9 @@ class Produtos extends Component {
     ];
 
     return (
-      <div className="Clientes full-width">
+      <div className="Produtos full-width">
         <div className="Card">
-          <Titulo tipo="h1" titulo="Clientes" />
+          <Titulo tipo="h1" titulo="Produtos" />
           <br />
           <div className="flex">
             <div className="flex-3">
