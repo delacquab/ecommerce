@@ -1,10 +1,12 @@
-import React from "react";
+import React, { Component } from "react";
 import { Provider } from "react-redux";
 import store from "./store";
 
 import { HashRouter as Router, Route } from "react-router-dom";
 
 import base from "./containers/HOC/Base";
+
+import { initApp } from "./actions";
 
 // CONTAINER COM BASE
 import Pedidos from "./containers/Pedidos";
@@ -23,41 +25,50 @@ import Avaliacoes from "./containers/Avaliacoes";
 import Avaliacao from "./containers/Avaliacao";
 
 import Configuracoes from "./containers/Configuracoes";
+import Perfil from "./containers/Perfil";
 
 // CONTAINER SEM BASE
 import Login from "./containers/Login";
 import RecuperarSenha from "./containers/RecuperarSenha";
 import ResetarSenha from "./containers/RecuperarSenha/ResetarSenha";
 
-function App() {
-  return (
-    <Provider store={store}>
-      <Router>
-        <div className="App">
-          <Route path={"/"} exact component={base(Pedidos)} />
-          <Route path={"/pedido/:id"} component={base(Pedido)} />
+class App extends Component {
+  componentWillMount() {
+    initApp();
+  }
 
-          <Route path={"/clientes"} component={base(Clientes)} />
-          <Route path={"/cliente/:email"} component={base(Cliente)} />
+  render() {
+    return (
+      <Provider store={store}>
+        <Router>
+          <div className="App">
+            <Route path={"/"} exact component={base(Pedidos)} />
+            <Route path={"/pedido/:id"} component={base(Pedido)} />
 
-          <Route path={"/categorias"} component={base(Categorias)} />
-          <Route path={"/categoria/:id"} component={base(Categoria)} />
+            <Route path={"/clientes"} component={base(Clientes)} />
+            <Route path={"/cliente/:email"} component={base(Cliente)} />
 
-          <Route path={"/produtos"} component={base(Produtos)} />
-          <Route path={"/produto/:id"} component={base(Produto)} />
+            <Route path={"/categorias"} component={base(Categorias)} />
+            <Route path={"/categoria/:id"} component={base(Categoria)} />
 
-          <Route path={"/avaliacoes/:id"} component={base(Avaliacoes)} />
-          <Route path={"/avaliacao/:id"} component={base(Avaliacao)} />
-          <Route path={"/avaliacao/:id"} component={base(Avaliacao)} />
-          <Route path={"/configuracoes"} component={base(Configuracoes)} />
+            <Route path={"/produtos"} component={base(Produtos)} />
+            <Route path={"/produto/:id"} component={base(Produto)} />
 
-          <Route path={"/login"} component={Login} />
-          <Route path={"/recuperar-senha"} component={RecuperarSenha} />
-          <Route path={"/resetar-senha/:token"} component={ResetarSenha} />
-        </div>
-      </Router>
-    </Provider>
-  );
+            <Route path={"/avaliacoes/:id"} component={base(Avaliacoes)} />
+            <Route path={"/avaliacao/:id"} component={base(Avaliacao)} />
+            <Route path={"/avaliacao/:id"} component={base(Avaliacao)} />
+
+            <Route path={"/configuracoes"} component={base(Configuracoes)} />
+            <Route path={"/perfil"} component={base(Perfil)} />
+
+            <Route path={"/login"} component={Login} />
+            <Route path={"/recuperar-senha"} component={RecuperarSenha} />
+            <Route path={"/resetar-senha/:token"} component={ResetarSenha} />
+          </div>
+        </Router>
+      </Provider>
+    );
+  }
 }
 
 export default App;
