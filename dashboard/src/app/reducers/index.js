@@ -1,6 +1,7 @@
 import { combineReducers } from "redux";
 
-// import authReducer from './auth_reducer';
+import authReducer from "./auth_reducer";
+import pedidoReducer from "./pedido_reducer";
 // import pedidoReducer from './pedido_reducer';
 // import clienteReducer from './cliente_reducer';
 // import categoriaReducer from './categoria_reducer';
@@ -10,9 +11,8 @@ import { combineReducers } from "redux";
 // import configuracaoReducer from './configuracao_reducer';
 
 const reducers = combineReducers({
-  root: (state, action) => state || {}
-  // auth: authReducer,
-  // pedido: pedidoReducer,
+  auth: authReducer,
+  pedido: pedidoReducer
   // cliente: clienteReducer,
   // categoria: categoriaReducer,
   // produto: produtoReducer,

@@ -7,42 +7,78 @@ import Pesquisa from "../../components/Inputs/Pesquisa";
 import Tabela from "../../components/Tabela/Simples";
 import Paginacao from "../../components/Paginacao/Simples";
 
+import * as actions from "../../actions/pedidos";
+import { formatMoney } from "../../actions";
+import { connect } from "react-redux";
+
 class Pedidos extends Component {
   state = {
     pesquisa: "",
-    atual: 0
+    atual: 0,
+    limit: 2
   };
 
+  getPedidos() {
+    const { atual, limit, pesquisa } = this.state;
+    const { usuario } = this.props;
+
+    if (!usuario) return null;
+
+    const loja = usuario.loja;
+    if (pesquisa) {
+      this.props.getPedidosPesquisa(pesquisa, atual, limit, loja);
+    } else {
+      this.props.getPedidos(atual, limit, loja);
+    }
+  }
+
+  componentDidMount() {
+    this.getPedidos();
+  }
+
+  componentWillUpdate(nextProps) {
+    if (!this.props.usuario && nextProps.usuario) {
+      this.getPedidos();
+    }
+  }
+
+  handleSubmitPesquisa() {
+    this.setState({ atual: 0 }, () => {
+      const { atual, limit, pesquisa } = this.state;
+      const { usuario } = this.props;
+
+      if (!usuario) return null;
+
+      const loja = usuario.loja;
+      this.props.getPedidosPesquisa(pesquisa, atual, limit, loja);
+    });
+  }
+
   onChangePesquisa = ev => this.setState({ pesquisa: ev.target.value });
-  changeNumeroAtual = atual => this.setState({ atual });
+
+  changeNumeroAtual = atual => {
+    this.setState({ atual }, () => {
+      this.getPedidos();
+    });
+  };
 
   render() {
     const { pesquisa } = this.state;
+    const { pedidos } = this.props;
 
-    //DADOS
-    const dados = [
-      {
-        Cliente: "Cliente 1",
-        "Valor Total": 89.9,
-        Data: moment().toISOString(),
-        Situação: "Aguardando Pagamento",
-        botaoDetalhes: "/pedido/d6s7dd8d6s7dsa768"
-      },
-      {
-        Cliente: "Cliente 2",
-        "Valor Total": 189.9,
-        Data: moment().toISOString(),
-        Situação: "Aguardando Concluído",
-        botaoDetalhes: "/pedido/d6s78drr6s7dsa768"
-      },
-      {
-        Cliente: "Cliente 3",
-        "Valor Total": 8,
-        Data: moment().toISOString(),
-        Situação: "Aguardando Pagamento",
-        botaoDetalhes: "/pedido/d6s78dyy6s7dsa768"
-      }
-    ];
+    const dados = [];
+    (pedidos ? pedidos.docs : []).forEach(item => {
+      dados.push({
+        Cliente: item.cliente ? item.cliente.nome : "",
+        "Valor Total": formatMoney(item.pagamento.valor),
+        Data: moment(item.createdAt).format("DD/MM/YYYY"),
+        Situação:
+          item.pagamento.status !== "Paga"
+            ? item.pagamento.status
+            : item.entrega.status,
+        botaoDetalhes: `/pedido/${item._id}`
+      });
+    });
 
     return (
       <div className="Pedidos full-width">
@@ -53,7 +89,7 @@ class Pedidos extends Component {
             valor={pesquisa}
             placeholder={"Pesquisa aqui pelo nome do cliente..."}
             onChange={ev => this.onChangePesquisa(ev)}
-            onClick={() => alert("Pesquisar")}
+            onClick={() => this.handleSubmitPesquisa()}
           />
           <br />
           <Tabela
@@ -63,8 +99,8 @@ class Pedidos extends Component {
           {
             <Paginacao
               atual={this.state.atual}
-              total={120}
-              limite={20}
+              total={this.props.pedidos ? this.props.pedidos.total : 0}
+              limite={this.state.limit}
               onClick={numeroAtual => this.changeNumeroAtual(numeroAtual)}
             />
           }
@@ -74,4 +110,9 @@ class Pedidos extends Component {
   }
 }
 
-export default Pedidos;
+const mapStateToProps = state => ({
+  pedidos: state.pedido.pedidos,
+  usuario: state.auth.usuario
+});
+
+export default connect(mapStateToProps, actions)(Pedidos);
