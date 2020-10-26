@@ -53,22 +53,22 @@ class PedidoController {
   // get /admin/:id showAdmin
   async showAdmin(req, res, next) {
     try {
-      // const pedido = await Pedido.findOne({
-      //   loja: req.query.loja,
-      //   _id: req.params.id
-      // }).populate(["cliente", "pagamento", "entrega", "loja"]);
-      // pedido.carrinho = await Promise.all(
-      //   pedido.carrinho.map(async item => {
-      //     item.produto = await Produto.findById(item.produto);
-      //     item.variacao = await Variacao.findById(item.variacao);
-      //     return item;
-      //   })
-      // );
-
       const pedido = await Pedido.findOne({
         loja: req.query.loja,
         _id: req.params.id
       }).populate(["cliente", "pagamento", "entrega", "loja"]);
+      pedido.carrinho = await Promise.all(
+        pedido.carrinho.map(async item => {
+          item.produto = await Produto.findById(item.produto);
+          item.variacao = await Variacao.findById(item.variacao);
+          return item;
+        })
+      );
+
+      // const pedido = await Pedido.findOne({
+      //   loja: req.query.loja,
+      //   _id: req.params.id
+      // }).populate(["cliente", "pagamento", "entrega", "loja"]);
 
       const registros = await RegistroPedido.find({ pedido: pedido._id });
       return res.send({ pedido, registros });

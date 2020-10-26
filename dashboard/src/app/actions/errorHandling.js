@@ -20,6 +20,8 @@ const errorHandling = error => {
   if (_errors && typeof _errors === "string")
     return { status: 400, message: _errors };
 
+  console.log(_errors);
+
   let msg = `Erro: Preencha corretamente ${
     _errors.length > 1 ? "os campos" : "o campo"
   } de `;

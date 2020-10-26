@@ -7,6 +7,8 @@ export const saveToken = (usuario, opcaoLembrar) => {
   localStorage.setItem("token2", token2);
   localStorage.setItem("token3", token3);
   localStorage.setItem("opcaoLembrar", opcaoLembrar);
+  console.log("token set");
+  console.log(usuario.token);
 };
 
 export const cleanToken = () => {
@@ -22,6 +24,8 @@ export const getToken = () => {
   const token3 = localStorage.getItem("token3");
 
   if (!token1 || !token2 || !token3) return null;
+
+  console.log(`${token1}.${token2}.${token3}`);
 
   return `${token1}.${token2}.${token3}`;
 };
